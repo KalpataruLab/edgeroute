@@ -1,6 +1,6 @@
 # Edgeroute
 
-*Config-driven edge routing on Cloudflare Workers.* By [KalpataruLab](https://github.com/KalpataruLab).
+*Config-driven edge routing on Cloudflare Workers.* By [KalpataruLab](https://kalpatarulab.com). Website: [edgeroute.kalpatarulab.com](https://edgeroute.kalpatarulab.com).
 
 Edgeroute is a Cloudflare Worker (Hono) that routes requests to backend services by path prefix. Routes live in KV, so config changes need no redeploy.
 
@@ -36,7 +36,7 @@ Use domain names with `https://` for targets, not IP addresses. Routes are match
 | [ARCHITECTURE](docs/ARCHITECTURE.md), [SECURITY_DIAGRAM](docs/SECURITY_DIAGRAM.md) | How requests flow and where checks happen |
 | [ROADMAP](docs/ROADMAP.md) | Open and finished work |
 
-The full index is [docs/README.md](docs/README.md).
+The project site is [edgeroute.kalpatarulab.com](https://edgeroute.kalpatarulab.com). The full index is [docs/README.md](docs/README.md).
 
 ## Development
 
