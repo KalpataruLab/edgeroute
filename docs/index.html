@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Edgeroute: config-driven edge routing on Cloudflare Workers</title>
+<meta name="description" content="Edgeroute is a Cloudflare Worker built with Hono that routes requests to backends by path prefix, with weighted load balancing, failover, HMAC signing and edge caching.">
+<style>
+:root{--bg:#fff;--fg:#14171f;--mut:#5b6472;--line:#e3e6ec;--acc:#e2590f;--card:#f7f8fa;--code:#0f1420;--codefg:#e6e9f0}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1017;--fg:#e8ebf2;--mut:#99a2b3;--line:#232937;--acc:#ff7a33;--card:#141924;--code:#070a10}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg)}
+.w{max-width:960px;margin:0 auto;padding:0 24px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+nav b{font-size:18px;letter-spacing:-.02em}
+nav a{color:var(--mut);text-decoration:none;margin-left:20px;font-size:14px}
+nav a:hover{color:var(--acc)}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.1;letter-spacing:-.03em;margin:56px 0 16px}
+h1 em{font-style:normal;color:var(--acc)}
+.lead{font-size:1.2rem;color:var(--mut);max-width:620px}
+.btns{margin:28px 0 8px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;border:1px solid var(--line);color:var(--fg)}
+.btn.p{background:var(--acc);border-color:var(--acc);color:#fff}
+pre{background:var(--code);color:var(--codefg);padding:18px 20px;border-radius:10px;overflow:auto;font:14px/1.6 ui-monospace,Menlo,Consolas,monospace}
+h2{font-size:1.5rem;letter-spacing:-.02em;margin:64px 0 20px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.c h3{margin:0 0 6px;font-size:1.02rem}
+.c p{margin:0;color:var(--mut);font-size:.94rem}
+.d a{display:block;padding:12px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+.d a:hover{color:var(--acc)}
+.d span{color:var(--mut);font-size:.9rem;margin-left:8px}
+footer{margin:72px 0 40px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:.9rem}
+footer a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="w">
+<nav><b>Edgeroute</b><div><a href="#features">Features</a><a href="#start">Quick start</a><a href="#docs">Docs</a><a href="https://github.com/KalpataruLab/edgeroute">GitHub</a></div></nav>
+
+<h1>Config-driven <em>edge routing</em> on Cloudflare Workers.</h1>
+<p class="lead">One Worker in front of your backends. Routes live in KV, so changing them needs no redeploy. Built with Hono, streaming by default, running on Cloudflare's edge.</p>
+<div class="btns"><a class="btn p" href="#start">Get started</a><a class="btn" href="https://github.com/KalpataruLab/edgeroute">View on GitHub</a></div>
+
+<h2 id="features">What it does</h2>
+<div class="g">
+<div class="c"><h3>Prefix routing</h3><p>First match wins. Query strings are kept and the prefix is stripped before forwarding.</p></div>
+<div class="c"><h3>Load balancing</h3><p>Several targets per route with a weighted pick, failover for GET and HEAD, and a per-route circuit breaker.</p></div>
+<div class="c"><h3>HMAC signing</h3><p>Optional request signing so backends can reject traffic that did not come through the Worker, with key rotation.</p></div>
+<div class="c"><h3>Edge cache and limits</h3><p>Optional caching of GET responses and per-IP rate limiting.</p></div>
+<div class="c"><h3>Never waits on KV</h3><p>Config is cached in memory and refreshed in the background (stale-while-revalidate).</p></div>
+<div class="c"><h3>Observable</h3><p>Streaming bodies, a 120 s default timeout, generic JSON errors with a request ID, structured logs and optional Analytics Engine metrics.</p></div>
+</div>
+
+<h2 id="start">Quick start</h2>
+<pre>git clone https://github.com/KalpataruLab/edgeroute.git
+cd edgeroute
+pnpm install
+pnpm run dev      # http://localhost:8787
+pnpm test</pre>
+<p>Copy <code>config.example.json</code> to <code>config.json</code>, edit the routes and upload it to KV. Use <code>https://</code> domain names for targets, and put specific prefixes first.</p>
+
+<h2 id="docs">Documentation</h2>
+<div class="d">
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/OPERATIONS.md">Operations<span>KV setup, secrets, deploy, rollback</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/CONFIGURATION.md">Configuration<span>route and config format</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/LOAD_BALANCING.md">Load balancing<span>weights, failover, circuit breaker</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/KEY_ROTATION.md">Key rotation<span>HMAC signing keys</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/EDGE_CACHE.md">Edge cache<span>caching GET responses</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/METRICS.md">Metrics<span>Analytics Engine</span></a>
+<a href="https://github.com/KalpataruLab/edgeroute/blob/main/docs/ARCHITECTURE.md">Architecture<span>how a request flows</span></a>
+</div>
+
+<footer>MIT licensed. Made by <a href="https://github.com/KalpataruLab">KalpataruLab</a>.</footer>
+</div>
+</body>
+</html>
