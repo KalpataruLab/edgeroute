@@ -1,0 +1,49 @@
+{
+  "name": "edgeroute",
+  "version": "1.0.0",
+  "description": "Config-driven edge routing on Cloudflare Workers, built with Hono",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/check-auth.mts && node scripts/validate-config.mts && vitest run",
+    "test:watch": "vitest",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "smoke": "node scripts/smoke.mts",
+    "validate-config": "node scripts/validate-config.mts",
+    "check:forbidden": "node scripts/check-forbidden.mts --all",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "types": "wrangler types worker-configuration.d.ts --include-runtime=false --strict-vars=false",
+    "types:check": "wrangler types worker-configuration.d.ts --include-runtime=false --strict-vars=false --check"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "proxy",
+    "load-balancer",
+    "edge",
+    "gateway",
+    "hono"
+  ],
+  "author": "KalpataruLab",
+  "homepage": "https://kalpatarulab.com",
+  "repository": "github:KalpataruLab/edgeroute",
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^4.13.16"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.8",
+    "@cloudflare/vitest-plugin": "^1.9.0",
+    "@cloudflare/workers-types": "^5.20261123.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1",
+    "wrangler": "^4.166.0"
+  }
+}

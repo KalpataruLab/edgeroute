@@ -1,0 +1,26 @@
+{
+  "routes": [
+    { "prefix": "/api/data", "target": "https://api.example.test/api/data", "hmacRequired": true, "rateLimitMultiplier": 1.0 },
+    { "prefix": "/api/Data", "target": "https://api.example.test/api/Data", "hmacRequired": true, "rateLimitMultiplier": 0.5 },
+    { "prefix": "/api/public", "target": "https://api.example.test/public", "hmacRequired": false, "rateLimitMultiplier": 2.0 },
+    { "prefix": "/", "target": "https://www.example.test", "rateLimitMultiplier": 2.0 }
+  ],
+  "allowedOrigins": [
+    "*.example.test",
+    "https://app.example.test",
+    "http://localhost:4200"
+  ],
+  "blockedOrigins": [
+    "abuse.example.test"
+  ],
+  "rateLimit": {
+    "enabled": true,
+    "requestsPerWindow": 300,
+    "windowSeconds": 300,
+    "hmacBypass": false,
+    "hmacMultiplier": 2.0
+  },
+  "authSalt": "REPLACE_WITH_OUTPUT_OF: openssl rand -base64 32",
+  "turnstileSecretKey": "",
+  "version": "1.0"
+}

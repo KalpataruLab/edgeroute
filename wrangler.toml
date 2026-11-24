@@ -1,0 +1,94 @@
+name = "proxy-load-balancer"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+
+# KV namespace for configuration storage
+[[kv_namespaces]]
+binding = "PROXY_CONFIG"
+id = "2c61e09e1d7842b5a8b00e61a2c2e6be"
+
+# Environment variables
+[vars]
+REQUEST_TIMEOUT = "120000"  # 120 seconds in milliseconds
+CACHE_TTL = "60000"         # 60 seconds in milliseconds
+# Secrets (set with `wrangler secret put`, never here): ADMIN_KEY, AUTH_SALT, TURNSTILE_SECRET_KEY
+
+# Analytics Engine: one data point per request (see docs/METRICS.md)
+[[analytics_engine_datasets]]
+binding = "METRICS"
+dataset = "proxy_metrics_dev"
+
+# Durable Object for strictReplay (one-time HMAC tokens across instances). Unused unless the config sets it (docs/hmac/STRICT_REPLAY.md)
+[[durable_objects.bindings]]
+name = "REPLAY"
+class_name = "ReplayGuard"
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReplayGuard"]
+
+# Cron Trigger: active health checks, a no-op unless a route sets healthCheck (see docs/LOAD_BALANCING.md)
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+# --- Environments ---------------------------------------------------------
+# Bindings and vars are NOT inherited by [env.*], so each env lists its own.
+# Secrets are per environment too: `wrangler secret put <NAME> --env staging|production`.
+# Top-level above = local dev and tests only; deploy with --env.
+
+# Staging: a separate Worker with its own KV namespace.
+[env.staging]
+name = "proxy-load-balancer-staging"
+[[env.staging.kv_namespaces]]
+binding = "PROXY_CONFIG"
+id = "REPLACE_WITH_STAGING_KV_NAMESPACE_ID"  # wrangler kv namespace create PROXY_CONFIG --env staging
+[[env.staging.analytics_engine_datasets]]
+binding = "METRICS"
+dataset = "proxy_metrics_staging"
+[[env.staging.durable_objects.bindings]]
+name = "REPLAY"
+class_name = "ReplayGuard"
+[[env.staging.migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReplayGuard"]
+[env.staging.triggers]
+crons = ["* * * * *"]
+[env.staging.vars]
+REQUEST_TIMEOUT = "120000"
+CACHE_TTL = "60000"
+[env.staging.observability]
+enabled = true
+[env.staging.observability.logs]
+enabled = true
+invocation_logs = true
+
+# Production: the existing Worker and KV namespace, unchanged.
+[env.production]
+name = "proxy-load-balancer"
+[[env.production.kv_namespaces]]
+binding = "PROXY_CONFIG"
+id = "2c61e09e1d7842b5a8b00e61a2c2e6be"
+[[env.production.analytics_engine_datasets]]
+binding = "METRICS"
+dataset = "proxy_metrics"
+[[env.production.durable_objects.bindings]]
+name = "REPLAY"
+class_name = "ReplayGuard"
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReplayGuard"]
+[env.production.triggers]
+crons = ["* * * * *"]
+[env.production.vars]
+REQUEST_TIMEOUT = "120000"
+CACHE_TTL = "60000"
+[env.production.observability]
+enabled = true
+[env.production.observability.logs]
+enabled = true
+invocation_logs = true
